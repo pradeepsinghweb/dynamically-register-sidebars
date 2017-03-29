@@ -1,11 +1,11 @@
 <?php
 /*
  * Plugin Name: Dynamically Register Sidebars
- * Plugin URI: http://wollmilchsau.de/
- * Description: Create dynamically sidebars, Register dynamic sidebars
+ * Plugin URI: https://github.com/pradeepsinghweb
+ * Description: Create dynamically sidebars, Register dynamic sidebars, WordPress Sidebars
  * Version: 1.0
  * Author: Pradeep Singh
- * Author URI: http://wollmilchsau.de/
+ * Author URI: https://github.com/pradeepsinghweb
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -32,7 +32,14 @@ class Dynamically_Register_Sidebars {
 
     public function __construct(){
         add_action('admin_menu',array(&$this, 'add_register_sidebars_page_settings' ));
+        add_action('admin_enqueue_scripts',array(&$this, 'add_register_sidebars_scripts' ));
         add_action( 'widgets_init', array( __CLASS__, 'register_sidebars' ),20);
+    }
+    public function add_register_sidebars_scripts(){
+        if($_GET['page'] != 'dynamic-register-sidebars-page') return;
+
+        wp_enqueue_script('register-sidebar-js', plugins_url('assets/sidebar-js.js', __FILE__), array('jquery'), '1.0.0', true);
+        wp_enqueue_style( 'register-sidebar-css', plugins_url('assets/sidebar-css.css', __FILE__), array(), '1.0.0', 'all');
     }
     public static function register_sidebars(){
         $_register_sidebar_areas = array();
@@ -214,71 +221,6 @@ class Dynamically_Register_Sidebars {
                 </p>
             </form>
         </div>
-        <style>
-            ul.dynamic_sidebar_list{
-
-            }
-            .dynamic_sidebar_list li > .item { position: relative; padding: 2px 0px; margin: 4px 0px;  border: 1px solid #DDDDDD;-moz-border-radius:6px; background-color: #f9f9f9;}
-            .dynamic_sidebar_list li > .item.active,.dynamic_sidebar_list li:nth-child(2n+1) > .item.active{background: #0073aa !important;}
-            .dynamic_sidebar_list li .item.active span{color: #fff;}
-            .dynamic_sidebar_list li:nth-child(2n+1) > .item {    background-color: #fff !important;}
-            .dynamic_sidebar_list li span { display: block; padding: 5px 10px; color:#555; font-size:13px;}
-            .dynamic_sidebar_list table span{display: inline;}
-            .register_new_sidebar_ctr{
-                width: 100%;
-                float: left;
-                border-top: 1px solid #ccc;
-                display: none;
-            }
-            .register_new_sidebar_ctr table{width: 50%;}
-            .dynamic_sidebar_list .actions{display: block;position: absolute;
-                top: 0;
-                right: 0;text-decoration: none;}
-            .dynamic_sidebar_list .actions:focus,.dynamic_sidebar_list .actions:active{text-decoration:none;outline: none;box-shadow: none;}
-            .dynamic_sidebar_list .actions .dashicons{
-                font-size: 20px;
-                height: 22px;
-            }
-            .dynamic_sidebar_list .actions.edit-sidebar:hover .dashicons{color: #0073aa;}
-            .dynamic_sidebar_list .actions.trash-sidebar:hover .dashicons{color: #d54e21;}
-            .dynamic_sidebar_list .actions.edit-sidebar{right: 40px;}
-            .edit_sidebar_ctr{
-                display: none;
-                border: 1px solid #DDDDDD;
-                background: #fff;
-                padding: 0 20px;
-            }
-        </style>
-        <script type="text/javascript">
-            jQuery(document).ready(function ($) {
-                $('.create-new-sidebar').click(function () {
-                    $('.register_new_sidebar_ctr').slideToggle(400).toggleClass('active');
-                });
-                $(document).on('click','.edit-sidebar',function (e) {
-                    e.preventDefault();
-                    $formID = $(this).parent('.item').attr('data-sidebar-id');
-                    if($formID){
-                        if($(".sidebar-edit-form-"+$formID).hasClass('active')){
-                            $(".sidebar-edit-form-"+$formID).slideToggle(400).toggleClass('active');
-                        }else{
-                            $(".edit_sidebar_ctr").hide().removeClass('active');
-                            $('.item').removeClass('active');
-                            $(this).parent('.item').addClass('active');
-                            $(".sidebar-edit-form-"+$formID).slideToggle(400).toggleClass('active');
-                        }
-                    }
-                });
-                $(document).on('click','.trash-sidebar',function (e) {
-                    e.preventDefault();
-                    if (confirm("are you sure you want to delete this?")){
-                        $formID = $(this).parent('.item').attr('data-sidebar-id');
-                        if($formID){
-                            $('#deleteSidebar-'+$formID).submit();
-                        }
-                    }
-                });
-            });
-        </script>
         <?php
         echo '</div>';
     }
