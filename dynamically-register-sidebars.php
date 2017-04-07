@@ -1,7 +1,6 @@
 <?php
 /*
  * Plugin Name: Dynamically Register Sidebars
- * Plugin URI: https://github.com/pradeepsinghweb
  * Description: Create dynamically sidebars, Register dynamic sidebars, WordPress Sidebars
  * Version: 1.0
  * Author: Pradeep Singh
