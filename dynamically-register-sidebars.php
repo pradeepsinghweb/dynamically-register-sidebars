@@ -5,6 +5,7 @@
  * Version: 1.0
  * Author: Pradeep Singh
  * Author URI: https://github.com/pradeepsinghweb
+ * Text Domain: ps-dynamic-register-sidebars
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -30,6 +31,7 @@ class Dynamically_Register_Sidebars {
     }
 
     public function __construct(){
+        add_action( 'plugin_action_links_' . plugin_basename(__FILE__), array($this, 'plugin_action_links') );
         add_action('admin_menu',array(&$this, 'add_register_sidebars_page_settings' ));
         add_action('admin_enqueue_scripts',array(&$this, 'add_register_sidebars_scripts' ));
         add_action( 'widgets_init', array( __CLASS__, 'register_sidebars' ),20);
@@ -222,6 +224,11 @@ class Dynamically_Register_Sidebars {
         </div>
         <?php
         echo '</div>';
+    }
+    public function plugin_action_links($links){
+        unset( $links['edit'] );
+        $links['manage'] = '<a href="' . admin_url('themes.php?page=dynamic-register-sidebars-page') . '">'.__('Settings', 'ps-dynamic-register-sidebars').'</a>';
+        return $links;
     }
 }
 add_action( 'plugins_loaded', array( 'Dynamically_Register_Sidebars', 'getInstance' ) );
